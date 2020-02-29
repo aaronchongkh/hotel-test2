@@ -146,7 +146,8 @@ export class BookingForm extends React.Component<LState, IState> {
                 phoneno: phonenoString, 
                 roomType: roomTypeString, 
                 startDate: startDateString, 
-                noOfPeople: noOfPeopleString
+                noOfPeople: noOfPeopleString, 
+                roomNumber: 0
             }
         }; 
 
