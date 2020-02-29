@@ -46,6 +46,7 @@ export class BookingForm extends React.Component<LState, IState> {
     constructor(props: Readonly<LState>) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
 
         this.state = {
             startDate: new Date(), 
@@ -90,7 +91,7 @@ export class BookingForm extends React.Component<LState, IState> {
     public photoSelection() {
         let numOfSel: Array<JSX.Element> = [];
         for(let i = 1; i <= this.props.noOfPeople; i++) {
-            numOfSel.push(<div>Person number {i}: <button>Import picture</button></div>)
+            numOfSel.push(<div>Person number {i}:<input type="file" name="file" onChange={this.handlePhotoUpload} /></div>)
         }
         return numOfSel;
     }
@@ -125,6 +126,7 @@ export class BookingForm extends React.Component<LState, IState> {
         console.log(this.state);
         console.log(cusFullName);
         
+        var defaultRoomNumber = 0;
 
         var params = {
             TableName: 'HotelCustomer', 
@@ -147,7 +149,7 @@ export class BookingForm extends React.Component<LState, IState> {
                 roomType: roomTypeString, 
                 startDate: startDateString, 
                 noOfPeople: noOfPeopleString, 
-                roomNumber: 0
+                roomNumber: defaultRoomNumber.toString()
             }
         }; 
 
