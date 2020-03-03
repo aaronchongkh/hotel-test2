@@ -35,7 +35,7 @@ export default class Home extends React.Component<{}, IState> {
         <Cover>
             <Banner 
             title="Alexis Suites"
-            subtitle="Indulging a premium & smart stay"
+            subtitle="Thanks for staying with us!"
             >
             </Banner>
         </Cover>
