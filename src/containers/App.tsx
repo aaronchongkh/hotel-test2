@@ -13,6 +13,7 @@ import ErrorPage from '../pages/ErrorPage';
 import Test from '../pages/Test';
 import RoomSelection from '../pages/RoomSelection';
 import BookingComplete from '../pages/BookingComplete';
+import Lmao from '../pages/Lmao';
 
 const App: React.FC = () => {
   return (
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         <Route exact path="/test" component={Test} />
         <Route exact path="/roomselection" component={RoomSelection} />
         <Route exact path="/bookingcomplete" component={BookingComplete} />
+        <Route exact path="/lmao" component={Lmao} />
         <Route component={ErrorPage} />
       </Switch>
     </React.Fragment>

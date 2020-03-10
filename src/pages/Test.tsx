@@ -6,6 +6,7 @@ import 'react-dropdown/style.css'
 // import AWS from 'aws-sdk';
 // const S3FileUpload = require('react-s3');
 import AWS, { DynamoDB } from 'aws-sdk';
+import Webcam from 'react-webcam';
 const S3 = require('react-aws-s3');
 
 interface IState {
@@ -183,11 +184,15 @@ export default class Test extends React.Component<{}, IState> {
             <p id="infoCount" ref="infoCount">This is customer: {this.state.tries + 1} </p>
             <button disabled={this.isButtonDisabled()} onClick={this.addTries}>jfjfjf</button>
             <h1>Preview</h1>
+            <h1>lksdjfldsjlfkdjsf</h1>
             <img src={this.state.previewImg} alt="" />
         </div>
         <div>
             <button onClick={this.dbtry}>DynamoDB try</button>
         </div>
+        <Webcam
+        height={360}
+        />
         <input type="name" onChange={(e) => this.dynamicInput(e.target.value)} placeholder="Try to dynamic input"></input>
         </div>
     }
