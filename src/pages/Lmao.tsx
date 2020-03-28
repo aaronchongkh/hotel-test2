@@ -70,7 +70,7 @@ export default class Lmao extends React.Component<{}, IState> {
         // S3FileUpload.uploadFile(data).then((data: any) => console.log(data), window.alert("Uploaded")).catch((err: any) => console.error(err));
     }
 
-    handleUpload =() => {
+    handleUpload = () => {
         // var buf = Buffer.from(this.state.previewImg.imageBinary.toString().replace(/^data:image\/\w+;base64,/, ""), 'base64')
         // var binary = this.state.previewImg.toString().split(',')[1];
         const buffer = Buffer.from(this.state.previewImg.replace(/^data:image\/\w+;base64,/, ""),'base64');

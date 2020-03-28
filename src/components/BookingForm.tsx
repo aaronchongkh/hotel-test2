@@ -6,6 +6,7 @@ import { IState } from '../models/models';
 import Moment from 'react-moment';
 import dynamo from 'dynamodb';
 import AWS, { DynamoDB } from 'aws-sdk';
+import Webcam, { WebcamProps } from 'react-webcam';
 // const AWS = require('aws-sdk');
 const S3 = require('react-aws-s3');
 
@@ -34,6 +35,8 @@ const config = {
 // AWS.config.secretAccessKey = config.secretAccessKey;
 // AWS.config.region = config.region
 
+var s3Bucket = new AWS.S3( { params: {Bucket: 'facerecogdata2'} } );
+
 AWS.config.update({accessKeyId: 'AKIA2FBSYGBOR6A3TQGL', secretAccessKey: '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', region: 'us-east-2'});
 const dynamoDb = new AWS.DynamoDB.DocumentClient({accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey, region: config.region});
 
@@ -43,6 +46,7 @@ const S3FileUpload = new S3(config);
 // const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 export class BookingForm extends React.Component<LState, IState> {
+    private webcamRef: React.RefObject<Webcam> & React.RefObject<HTMLVideoElement>;
     constructor(props: Readonly<LState>) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -57,7 +61,7 @@ export class BookingForm extends React.Component<LState, IState> {
             lname: "", 
             email: "", 
             phoneno: "", 
-            previewImg: "", 
+            previewImg: null, 
             photoInput: false,
             bookingRedirect: false
         }
@@ -101,6 +105,36 @@ export class BookingForm extends React.Component<LState, IState> {
         return <div>
             {this.photoSelection()}
         </div>
+    }
+
+    handleCapture = () => {
+        var tempPhoto = this.webcamRef.current.getScreenshot();
+        this.setState({
+            previewImg: tempPhoto
+        });
+    }
+
+    handlePhotoUpload2 = () => {
+        const buffer = Buffer.from(this.state.previewImg.replace(/^data:image\/\w+;base64,/, ""),'base64');
+        console.log(buffer);
+        var fnameString = this.state.fname; 
+        var lnameString = this.state.lname; 
+        var cusFullName = fnameString + "_" + lnameString;
+        var data = {
+            Key: cusFullName + ".jpeg", 
+            Body: buffer,
+            ContentEncoding: 'base64',
+            ContentType: 'image/jpeg', 
+            Bucket: 'facerecogdata2'
+        };
+        s3Bucket.putObject(data, function(err, data){
+            if (err) { 
+                console.log(err);
+                console.log('Error uploading data: ', data); 
+            } else {
+                console.log('succesfully uploaded the image!');
+            }
+        });
     }
 
     public handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -246,7 +280,19 @@ export class BookingForm extends React.Component<LState, IState> {
                     <p>First Name: <input ref='fname' placeholder= "Enter first name" type="text" onChange={e => this.handleFirstName(e.target.value)}></input> Last Name: <input ref='lname' placeholder= "Enter last name" type="text" onChange={e => this.handleLastName(e.target.value)}></input></p>
                     <p>Email address: <input ref='email' placeholder="Enter email address" type="email" onChange={e => this.handleEmail(e.target.value)}></input></p>
                     <p>Phone number: <input ref='phoneno' placeholder="Enter phone number" type="number" onChange={e => this.handlePhone(e.target.value)}></input></p>
-                    {this.renderPhotoSelection()}
+                    {/* {this.renderPhotoSelection()} */}
+                    <Webcam 
+                        height={360}
+                        width={720}
+                        screenshotFormat="image/jpeg"
+                        audio={false}
+                        ref={this.webcamRef}
+                        />
+                    <div>
+                        <button onClick={this.handleCapture}>Capture photo</button>
+                        <button onClick={this.handlePhotoUpload2}>Upload photo</button>
+                        <img src={this.state.previewImg} />
+                    </div>
                     <button className="btn-primary" type="submit">Finish booking</button>
                 </div>
             </div>
