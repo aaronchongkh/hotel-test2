@@ -15,10 +15,10 @@ interface LState {
     endDate: Date;
     noOfPeople: number;
     roomType?: string;
-    fname?: string; 
-    lname?: string; 
-    email?: string; 
-    phoneno?: string; 
+    fname?: string;
+    lname?: string;
+    email?: string;
+    phoneno?: string;
 }
 
 const config = {
@@ -35,10 +35,12 @@ const config = {
 // AWS.config.secretAccessKey = config.secretAccessKey;
 // AWS.config.region = config.region
 
-var s3Bucket = new AWS.S3( { params: {Bucket: 'facerecogdata2'} } );
 
-AWS.config.update({accessKeyId: 'AKIA2FBSYGBOR6A3TQGL', secretAccessKey: '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', region: 'us-east-2'});
-const dynamoDb = new AWS.DynamoDB.DocumentClient({accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey, region: config.region});
+AWS.config.update({ accessKeyId: 'AKIA2FBSYGBOR6A3TQGL', secretAccessKey: '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', region: 'us-east-2' });
+var s3Bucket = new AWS.S3({ params: { Bucket: 'facerecogdata2' } });
+
+
+const dynamoDb = new AWS.DynamoDB.DocumentClient({ accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey, region: config.region });
 
 // dynamo.AWS.config.update({accessKeyId: config.accessKeyId, secretAccessKey: config.secretAccessKey, region: config.region});
 
@@ -50,24 +52,27 @@ export class BookingForm extends React.Component<LState, IState> {
     constructor(props: Readonly<LState>) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.handleCapture = this.handleCapture.bind(this)
         this.handlePhotoUpload = this.handlePhotoUpload.bind(this)
+        this.webcamRef = React.createRef();
 
         this.state = {
-            startDate: new Date(), 
+            startDate: new Date(),
             endDate: new Date(),
-            noOfPeople: 1, 
+            noOfPeople: 1,
             roomType: "",
             fname: "",
-            lname: "", 
-            email: "", 
-            phoneno: "", 
-            previewImg: null, 
+            lname: "",
+            email: "",
+            phoneno: "",
+            previewImg: null,
             photoInput: false,
             bookingRedirect: false
         }
     }
 
     componentDidMount() {
+        console.log("JHASJDKSAJDLK")
         setTimeout(() => {
             // const { startDate, endDate, noOfPeople, roomType } = this.props.location.state;
             // console.log(startDate);
@@ -75,62 +80,67 @@ export class BookingForm extends React.Component<LState, IState> {
             // console.log(noOfPeople);
             // console.log(roomType);
 
-        this.setState({
-            startDate: this.props.startDate,
-            endDate: this.props.endDate,
-            noOfPeople: this.props.noOfPeople,
-            roomType: this.props.roomType,
-            fname: this.props.fname,
-            lname: this.props.lname,
-            email: this.props.email,
-            phoneno: this.props.phoneno
-        })
-        console.log(this.state.noOfPeople);
-        console.log(this.state.roomType);
-        console.log(this.state.startDate);
-        console.log(this.state.endDate);
+            this.setState({
+                startDate: this.props.startDate,
+                endDate: this.props.endDate,
+                noOfPeople: this.props.noOfPeople,
+                roomType: this.props.roomType,
+                fname: this.props.fname,
+                lname: this.props.lname,
+                email: this.props.email,
+                phoneno: this.props.phoneno
+            })
+            console.log(this.state.noOfPeople);
+            console.log(this.state.roomType);
+            console.log(this.state.startDate);
+            console.log(this.state.endDate);
         }, 1000)
     }
 
     public photoSelection() {
         let numOfSel: Array<JSX.Element> = [];
-        for(let i = 1; i <= this.props.noOfPeople; i++) {
+        for (let i = 1; i <= this.props.noOfPeople; i++) {
             numOfSel.push(<div>Person number {i}:<input type="file" name="file" onChange={this.handlePhotoUpload} /></div>)
         }
         return numOfSel;
     }
 
     public renderPhotoSelection() {
-        
+
         return <div>
             {this.photoSelection()}
         </div>
     }
 
-    handleCapture = () => {
+    handleCapture = (e) => {
+        e.preventDefault();
+        console.log("capture")
         var tempPhoto = this.webcamRef.current.getScreenshot();
         this.setState({
             previewImg: tempPhoto
         });
     }
 
-    handlePhotoUpload2 = () => {
-        const buffer = Buffer.from(this.state.previewImg.replace(/^data:image\/\w+;base64,/, ""),'base64');
+    handlePhotoUpload2 = (e) => {
+        e.preventDefault();
+        console.log("upload2")
+        AWS.config.update({ accessKeyId: 'AKIA2FBSYGBOR6A3TQGL', secretAccessKey: 'myA5ldaLfSkcCwYKF6DiG4q5nG4lMkXmJCoyRKSp', region: 'us-east-2' });
+        const buffer = Buffer.from(this.state.previewImg.replace(/^data:image\/\w+;base64,/, ""), 'base64');
         console.log(buffer);
-        var fnameString = this.state.fname; 
-        var lnameString = this.state.lname; 
+        var fnameString = this.state.fname;
+        var lnameString = this.state.lname;
         var cusFullName = fnameString + "_" + lnameString;
         var data = {
-            Key: cusFullName + ".jpeg", 
+            Key: cusFullName + ".jpeg",
             Body: buffer,
             ContentEncoding: 'base64',
-            ContentType: 'image/jpeg', 
+            ContentType: 'image/jpeg',
             Bucket: 'facerecogdata2'
         };
-        s3Bucket.putObject(data, function(err, data){
-            if (err) { 
+        s3Bucket.putObject(data, function (err, data) {
+            if (err) {
                 console.log(err);
-                console.log('Error uploading data: ', data); 
+                console.log('Error uploading data: ', data);
             } else {
                 console.log('succesfully uploaded the image!');
             }
@@ -140,16 +150,16 @@ export class BookingForm extends React.Component<LState, IState> {
     public handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         this.setState({
-            fname: (this.refs.fname as HTMLInputElement).value, 
+            fname: (this.refs.fname as HTMLInputElement).value,
             lname: (this.refs.lname as HTMLInputElement).value,
-            email: (this.refs.email as HTMLInputElement).value, 
+            email: (this.refs.email as HTMLInputElement).value,
             phoneno: (this.refs.phoneno as HTMLInputElement).value
         })
         console.log(this.state.fname);
 
-        var fnameString = this.state.fname; 
-        var lnameString = this.state.lname; 
-        var cusFullName = fnameString + "_" + lnameString; 
+        var fnameString = this.state.fname;
+        var lnameString = this.state.lname;
+        var cusFullName = fnameString + "_" + lnameString;
         var endDateString = this.state.endDate.toDateString().split(' ').slice(1).join(' ');
         var startDateString = this.state.startDate.toDateString().split(' ').slice(1).join(' ');
         var emailString = this.state.email;
@@ -159,11 +169,11 @@ export class BookingForm extends React.Component<LState, IState> {
 
         console.log(this.state);
         console.log(cusFullName);
-        
+
         var defaultRoomNumber = 0;
 
         var params = {
-            TableName: 'HotelCustomer', 
+            TableName: 'HotelCustomer',
             Item: {
                 // 'fName': {"S": this.state.fname}, 
                 // 'lName': {"S": this.state.lname}, 
@@ -176,30 +186,30 @@ export class BookingForm extends React.Component<LState, IState> {
                 // 'noOfPeople': {"S": this.state.noOfPeople}
                 fName: fnameString,
                 lName: lnameString,
-                email: emailString, 
-                endDate: endDateString, 
-                fullName: cusFullName, 
-                phoneno: phonenoString, 
-                roomType: roomTypeString, 
-                startDate: startDateString, 
-                noOfPeople: noOfPeopleString, 
+                email: emailString,
+                endDate: endDateString,
+                fullName: cusFullName,
+                phoneno: phonenoString,
+                roomType: roomTypeString,
+                startDate: startDateString,
+                noOfPeople: noOfPeopleString,
                 roomNumber: defaultRoomNumber.toString()
             }
-        }; 
+        };
 
         dynamoDb.put(params, (err, data) => {
             if (err) {
-                console.log("Error", err); 
+                console.log("Error", err);
                 window.alert("Can't upload data, please try again. ")
             } else {
                 console.log("Success", data);
                 this.setState({
                     bookingRedirect: true
-                })  
+                })
             }
         });
 
-        
+
 
         // setTimeout(() => {
         //     //bac
@@ -231,9 +241,9 @@ export class BookingForm extends React.Component<LState, IState> {
     }
 
     public handlePhotoUpload(e: any): void {
-        var fnameString = this.state.fname; 
-        var lnameString = this.state.lname; 
-        var fullName = fnameString + "_" + lnameString; 
+        var fnameString = this.state.fname;
+        var lnameString = this.state.lname;
+        var fullName = fnameString + "_" + lnameString;
 
         let file = e.target.files[0];
         let reader = new FileReader();
@@ -262,41 +272,43 @@ export class BookingForm extends React.Component<LState, IState> {
     public render(): JSX.Element {
         const bookingRedirect = this.state.bookingRedirect;
         console.log(this.state);
-        
+
         if (bookingRedirect) {
             return <Redirect to='/bookingcomplete' />
         }
         else {
             return <div>
-            <div className="banner">
-                <h2>Room details: </h2>
-                <p>Room type selected: {this.props.roomType}</p>
-                <p>Start date: {this.props.startDate.toDateString()}</p>
-                <p>End date: {this.props.endDate.toDateString()}</p>
-            </div>
-            <form onSubmit={(e) => this.handleSubmit(e)} noValidate={true}>
-            <div className="container">
-                <div className="form-group">
-                    <p>First Name: <input ref='fname' placeholder= "Enter first name" type="text" onChange={e => this.handleFirstName(e.target.value)}></input> Last Name: <input ref='lname' placeholder= "Enter last name" type="text" onChange={e => this.handleLastName(e.target.value)}></input></p>
-                    <p>Email address: <input ref='email' placeholder="Enter email address" type="email" onChange={e => this.handleEmail(e.target.value)}></input></p>
-                    <p>Phone number: <input ref='phoneno' placeholder="Enter phone number" type="number" onChange={e => this.handlePhone(e.target.value)}></input></p>
-                    {/* {this.renderPhotoSelection()} */}
-                    <Webcam 
-                        height={360}
-                        width={720}
-                        screenshotFormat="image/jpeg"
-                        audio={false}
-                        ref={this.webcamRef}
-                        />
-                    <div>
-                        <button onClick={this.handleCapture}>Capture photo</button>
-                        <button onClick={this.handlePhotoUpload2}>Upload photo</button>
-                        <img src={this.state.previewImg} />
-                    </div>
-                    <button className="btn-primary" type="submit">Finish booking</button>
+                <div className="banner">
+                    <h2>Room details: </h2>
+                    <p>Room type selected: {this.props.roomType}</p>
+                    <p>Start date: {this.props.startDate.toDateString()}</p>
+                    <p>End date: {this.props.endDate.toDateString()}</p>
                 </div>
-            </div>
-            </form>
+                <form onSubmit={(e) => this.handleSubmit(e)} noValidate={true}>
+                    <div className="container">
+                        <div className="form-group">
+                            <p>First Name: <input ref='fname' placeholder="Enter first name" type="text" onChange={e => this.handleFirstName(e.target.value)}></input> Last Name: <input ref='lname' placeholder="Enter last name" type="text" onChange={e => this.handleLastName(e.target.value)}></input></p>
+                            <p>Email address: <input ref='email' placeholder="Enter email address" type="email" onChange={e => this.handleEmail(e.target.value)}></input></p>
+                            <p>Phone number: <input ref='phoneno' placeholder="Enter phone number" type="number" onChange={e => this.handlePhone(e.target.value)}></input></p>
+                            {/* {this.renderPhotoSelection()} */}
+                            <Webcam
+                                height={360}
+                                width={720}
+                                screenshotFormat="image/jpeg"
+                                audio={false}
+                                ref={this.webcamRef}
+                            />
+                            <div>
+                                <button onClick={this.handleCapture}>Capture photo</button>
+                                <button onClick={this.handlePhotoUpload2}>Upload photo</button>
+                            </div>
+                            <div>
+                                <img src={this.state.previewImg} />
+                            </div>
+                            <button className="btn-primary" type="submit">Finish booking</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         }
     }
