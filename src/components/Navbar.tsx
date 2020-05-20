@@ -31,8 +31,8 @@ export default class Navbar extends Component<{}, IStateNavbar> {
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/rooms">Rooms</Link></li>
                         <li><Link to="/about">About</Link></li>
-                        <li><Link to="/test">Test</Link></li>
-                        <li><Link to="/lmao">Lmao</Link></li>
+                        {/* <li><Link to="/test">Test</Link></li> */}
+                        {/* <li><Link to="/lmao">Lmao</Link></li> */}
                     </ul>
                 </div>
             </nav>

@@ -299,8 +299,8 @@ export class BookingForm extends React.Component<LState, IState> {
                                 ref={this.webcamRef}
                             />
                             <div>
-                                <button onClick={this.handleCapture}>Capture photo</button>
-                                <button onClick={this.handlePhotoUpload2}>Upload photo</button>
+                                <button type="button" onClick={this.handleCapture}>Capture photo</button>
+                                <button type="button" onClick={this.handlePhotoUpload2}>Upload photo</button>
                             </div>
                             <div>
                                 <img src={this.state.previewImg} />
