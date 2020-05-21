@@ -2,7 +2,7 @@
   "name": "hotel-booking-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://shubhamd99.github.io/react-hotel-booking-app/",
+  "homepage": "https://aaronchongkh.github.io/react-hotel-booking-app/",
   "dependencies": {
     "@types/dynamodb": "^1.2.0",
     "@types/jest": "24.0.15",
