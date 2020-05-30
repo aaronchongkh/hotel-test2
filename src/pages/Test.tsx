@@ -190,10 +190,14 @@ export default class Test extends React.Component<{}, IState> {
         <div>
             <button onClick={this.dbtry}>DynamoDB try</button>
         </div>
-        <Webcam
+        {/* <Webcam
         height={360}
-        />
+        /> */}
         <input type="name" onChange={(e) => this.dynamicInput(e.target.value)} placeholder="Try to dynamic input"></input>
+        <form action="/action_page.php">
+            <p><input type="text" required></input></p>
+            <input type="submit"></input>
+        </form>
         </div>
     }
 }

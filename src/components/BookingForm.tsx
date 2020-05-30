@@ -141,8 +141,10 @@ export class BookingForm extends React.Component<LState, IState> {
             if (err) {
                 console.log(err);
                 console.log('Error uploading data: ', data);
+                window.alert('Error uploading data: ' + data);
             } else {
-                console.log('succesfully uploaded the image!');
+                console.log('Successfully uploaded the image!');
+                window.alert('Successfully uploaded the image');
             }
         });
     }
@@ -284,12 +286,12 @@ export class BookingForm extends React.Component<LState, IState> {
                     <p>Start date: {this.props.startDate.toDateString()}</p>
                     <p>End date: {this.props.endDate.toDateString()}</p>
                 </div>
-                <form onSubmit={(e) => this.handleSubmit(e)} noValidate={true}>
+                <form onSubmit={(e) => this.handleSubmit(e)}>
                     <div className="container">
                         <div className="form-group">
-                            <p>First Name: <input ref='fname' placeholder="Enter first name" type="text" onChange={e => this.handleFirstName(e.target.value)}></input> Last Name: <input ref='lname' placeholder="Enter last name" type="text" onChange={e => this.handleLastName(e.target.value)}></input></p>
-                            <p>Email address: <input ref='email' placeholder="Enter email address" type="email" onChange={e => this.handleEmail(e.target.value)}></input></p>
-                            <p>Phone number: <input ref='phoneno' placeholder="Enter phone number" type="number" onChange={e => this.handlePhone(e.target.value)}></input></p>
+                            <p>First Name: <input ref='fname' placeholder="Enter first name" type="text" onChange={e => this.handleFirstName(e.target.value)} required></input> Last Name: <input ref='lname' placeholder="Enter last name" type="text" onChange={e => this.handleLastName(e.target.value)} required></input></p>
+                            <p>Email address: <input ref='email' placeholder="Enter email address" type="email" onChange={e => this.handleEmail(e.target.value)} required></input></p>
+                            <p>Phone number: <input ref='phoneno' placeholder="Enter phone number" type="number" onChange={e => this.handlePhone(e.target.value)} required></input></p>
                             {/* {this.renderPhotoSelection()} */}
                             <Webcam
                                 height={360}
