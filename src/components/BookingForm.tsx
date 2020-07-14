@@ -25,8 +25,8 @@ const config = {
     bucketName: 'facerecogdata2',
     //dirName: 'media', /* optional */
     region: 'us-east-2',
-    accessKeyId: 'AKIA2FBSYGBOR6A3TQGL',
-    secretAccessKey: 'myA5ldaLfSkcCwYKF6DiG4q5nG4lMkXmJCoyRKSp',
+    accessKeyId: 'removed due to',
+    secretAccessKey: 'security concern',
     // s3Url: 'https:/your-custom-s3-url.com/', /* optional */
 }
 
@@ -36,7 +36,7 @@ const config = {
 // AWS.config.region = config.region
 
 
-AWS.config.update({ accessKeyId: 'AKIA2FBSYGBOR6A3TQGL', secretAccessKey: 'myA5ldaLfSkcCwYKF6DiG4q5nG4lMkXmJCoyRKSp', region: 'us-east-2' });
+AWS.config.update({ accessKeyId: 'removed due to', secretAccessKey: 'security concern', region: 'us-east-2' });
 var s3Bucket = new AWS.S3({ params: { Bucket: 'facerecogdata2' } });
 
 
